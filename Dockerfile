@@ -1,6 +1,6 @@
 FROM n8nio/n8n:latest
 
-USER postgres
+USER root
 
 WORKDIR /home/node/packages/cli
 ENTRYPOINT []
