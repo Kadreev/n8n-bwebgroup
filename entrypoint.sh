@@ -21,8 +21,7 @@ export DB_POSTGRESDB_PORT=$N8N_DB_PORT
 export DB_POSTGRESDB_DATABASE=$N8N_DB_DATABASE
 export DB_POSTGRESDB_USER=$N8N_DB_USER
 export DB_POSTGRESDB_PASSWORD=$N8N_DB_PASSWORD
-sed -i.bak \
-  's/this\.manager\?\.hasFeatureEnabled(feature) \?\? false/true/g' \
-  /usr/local/lib/node_modules/n8n/dist/license.js
+
+sed -i.bak -E 's#this\.manager\?\.[[:space:]]*hasFeatureEnabled\(feature\)[[:space:]]*\?\?[[:space:]]*false#true#g' /usr/local/lib/node_modules/n8n/dist/license.js
 # kickstart nodemation
 n8n
