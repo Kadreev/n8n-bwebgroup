@@ -21,6 +21,7 @@ export DB_POSTGRESDB_PORT=$N8N_DB_PORT
 export DB_POSTGRESDB_DATABASE=$N8N_DB_DATABASE
 export DB_POSTGRESDB_USER=$N8N_DB_USER
 export DB_POSTGRESDB_PASSWORD=$N8N_DB_PASSWORD
+export N8N_DIAGNOSTICS_ENABLED=false
 
 sed -i.bak -E 's#this\.manager\?\.[[:space:]]*hasFeatureEnabled\(feature\)[[:space:]]*\?\?[[:space:]]*false#true#g' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getConsumerId()/,/}/ s#return.*;#        return '\''123-;D'\'';#' /usr/local/lib/node_modules/n8n/dist/license.js
@@ -41,6 +42,7 @@ sed -i.bak 's#await this\.manager\.clear();#//await this.manager.clear();#g' /us
 sed -i.bak 's#await this\.manager\.renew();#//await this.manager.renew();#g' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak 's#await this\.manager\.shutdown();#//await this.manager.shutdown();#g' /usr/local/lib/node_modules/n8n/dist/license.js
 
+sed -i.bak 's#showNonProdBanner: this\.license\.isFeatureEnabled(constants_1\.LICENSE_FEATURES\.SHOW_NON_PROD_BANNER),#showNonProdBanner: false,#g' /usr/local/lib/node_modules/n8n/dist/services/frontend.service.js
 
 
 # kickstart nodemation
