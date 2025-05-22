@@ -31,6 +31,7 @@ sed -i.bak '/getVariablesLimit()/,/}/ s#return.*;#        return constants_1.UNL
 sed -i.bak '/getAiCredits()/,/}/       s#return.*;#        return 999;#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getWorkflowHistoryPruneLimit()/,/}/ s#return.*;#        return constants_1.UNLIMITED_LICENSE_QUOTA;#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getInsightsMaxHistory()/,/}/        s#return.*;#        return 180;#' /usr/local/lib/node_modules/n8n/dist/license.js
+sed -i.bak '/isAPIDisabled()/,/}/        s#return.*;#        return false;#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getInsightsRetentionMaxAge()/,/}/   s#return.*;#        return 1800;#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getInsightsRetentionPruneInterval()/,/}/ s#return.*;#        return 2400;#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getTeamProjectLimit()/,/}/      s#return.*;#        return 200;#' /usr/local/lib/node_modules/n8n/dist/license.js
