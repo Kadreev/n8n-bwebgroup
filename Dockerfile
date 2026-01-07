@@ -1,22 +1,27 @@
 FROM n8nio/n8n:latest
 
 USER root
-RUN apk add --no-cache \
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
     chromium \
-    nss \
-    alsa-lib \
-    atk \
-    libdrm \
-    libxkbcommon \
-    libxcomposite \
-    libxdamage \
-    libxrandr \
-    mesa-gbm \
-    ttf-freefont \
-    gtk+3.0 \
-    cairo \
-    pango \
-    harfbuzz
+    ca-certificates \
+    fonts-freefont-ttf \
+    libnss3 \
+    libasound2 \
+    libatk1.0-0 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libcairo2 \
+    libpango-1.0-0 \
+    libharfbuzz0b \
+  && rm -rf /var/lib/apt/lists/*
+  
 WORKDIR /home/node/packages/cli
 ENTRYPOINT []
 
