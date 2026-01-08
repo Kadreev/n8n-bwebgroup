@@ -1,4 +1,11 @@
 #!/bin/sh
+mkdir -p ./.cache
+
+# only move if it exists
+if [ -d /app/.cache/puppeteer ]; then
+  rm -rf ./.cache/puppeteer
+  mv /app/.cache/puppeteer ./.cache/
+fi
 
 # check if port variable is set or go with default
 if [ -z ${PORT+x} ]; then echo "PORT variable not defined, leaving N8N to default port."; else export N8N_PORT="$PORT"; echo "N8N will start on '$PORT'"; fi
