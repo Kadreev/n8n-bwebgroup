@@ -24,6 +24,7 @@ export DB_POSTGRESDB_PASSWORD=$N8N_DB_PASSWORD
 export N8N_DIAGNOSTICS_ENABLED=false
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 export PUPPETEER_EXECUTABLE_PATH=/app/.chrome-for-testing/chrome-linux64/chrome
+export N8N_REINSTALL_MISSING_PACKAGES=true
 
 sed -i.bak -E 's#this\.manager\?\.[[:space:]]*hasFeatureEnabled\(feature\)[[:space:]]*\?\?[[:space:]]*false#true#g' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getConsumerId()/,/}/ s#return.*;#        return '\''123-;D'\'';#' /usr/local/lib/node_modules/n8n/dist/license.js
