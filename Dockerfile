@@ -1,8 +1,6 @@
 FROM n8nio/n8n:latest
-USER root
 
-# Enable pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+USER root
 
 # Create the n8n nodes directory
 RUN mkdir -p /home/node/.n8n/nodes && chown -R node:node /home/node/.n8n
@@ -15,9 +13,10 @@ RUN chmod +x /entrypoint.sh
 USER node
 WORKDIR /home/node/.n8n/nodes
 
-# Install Playwright node + browsers at BUILD time (not runtime)
-RUN pnpm add n8n-nodes-playwright playwright && \
-    npx playwright install chromium
+# Install Playwright node + browsers at BUILD time using npm (already available)
+RUN npm init -y && \
+    npm install n8n-nodes-playwright && \
+    npx playwright install chromium --with-deps || npx playwright install chromium
 
 # Back to working directory for n8n
 WORKDIR /home/node/packages/cli
