@@ -1,38 +1,37 @@
 #!/bin/sh
-mkdir -p ./.cache
 
-# only move if it exists
-if [ -d /app/.cache/puppeteer ]; then
-  rm -rf ./.cache/puppeteer
-  mv /app/.cache/puppeteer ./.cache/
+# Handle Heroku's dynamic PORT
+if [ -z ${PORT+x} ]; then 
+  echo "PORT variable not defined, leaving N8N to default port."
+else 
+  export N8N_PORT="$PORT"
+  echo "N8N will start on '$PORT'"
 fi
 
-# check if port variable is set or go with default
-if [ -z ${PORT+x} ]; then echo "PORT variable not defined, leaving N8N to default port."; else export N8N_PORT="$PORT"; echo "N8N will start on '$PORT'"; fi
-
-# regex function
+# Parse DATABASE_URL (Heroku Postgres format)
 parse_url() {
   eval $(echo "$1" | sed -e "s#^\(\(.*\)://\)\?\(\([^:@]*\)\(:\(.*\)\)\?@\)\?\([^/?]*\)\(/\(.*\)\)\?#${PREFIX:-URL_}SCHEME='\2' ${PREFIX:-URL_}USER='\4' ${PREFIX:-URL_}PASSWORD='\6' ${PREFIX:-URL_}HOSTPORT='\7' ${PREFIX:-URL_}DATABASE='\9'#")
 }
 
-# prefix variables to avoid conflicts and run parse url function on arg url
 PREFIX="N8N_DB_" parse_url "$DATABASE_URL"
-echo "$N8N_DB_SCHEME://$N8N_DB_USER:$N8N_DB_PASSWORD@$N8N_DB_HOSTPORT/$N8N_DB_DATABASE"
+
 # Separate host and port    
 N8N_DB_HOST="$(echo $N8N_DB_HOSTPORT | sed -e 's,:.*,,g')"
 N8N_DB_PORT="$(echo $N8N_DB_HOSTPORT | sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' -e 's,[^0-9],,g')"
 
+# Export database config for n8n
 export DB_TYPE=postgresdb
 export DB_POSTGRESDB_HOST=$N8N_DB_HOST
 export DB_POSTGRESDB_PORT=$N8N_DB_PORT
 export DB_POSTGRESDB_DATABASE=$N8N_DB_DATABASE
 export DB_POSTGRESDB_USER=$N8N_DB_USER
 export DB_POSTGRESDB_PASSWORD=$N8N_DB_PASSWORD
+
+# General settings
 export N8N_DIAGNOSTICS_ENABLED=false
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export PUPPETEER_EXECUTABLE_PATH=/app/.chrome-for-testing/chrome-linux64/chrome
 export N8N_REINSTALL_MISSING_PACKAGES=true
 
+# License patches
 sed -i.bak -E 's#this\.manager\?\.[[:space:]]*hasFeatureEnabled\(feature\)[[:space:]]*\?\?[[:space:]]*false#true#g' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getConsumerId()/,/}/ s#return.*;#        return '\''123-;D'\'';#' /usr/local/lib/node_modules/n8n/dist/license.js
 sed -i.bak '/getUsersLimit()/,/}/    s#return.*;#        return constants_1.UNLIMITED_LICENSE_QUOTA;#' /usr/local/lib/node_modules/n8n/dist/license.js
@@ -55,6 +54,5 @@ sed -i.bak 's#await this\.manager\.shutdown();#//await this.manager.shutdown();#
 
 sed -i.bak 's#showNonProdBanner: this\.license\.isLicensed(constants_1\.LICENSE_FEATURES\.SHOW_NON_PROD_BANNER),#showNonProdBanner: false,#g' /usr/local/lib/node_modules/n8n/dist/services/frontend.service.js
 
-
-# kickstart nodemation
+# Start n8n
 n8n
